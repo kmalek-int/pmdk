@@ -7,6 +7,8 @@
 #ifndef PMEMSET_PART_H
 #define PMEMSET_PART_H
 
+#include <stddef.h>
+
 struct pmemset_part {
 	char stub;
 };
@@ -16,7 +18,9 @@ struct pmemset_part_descriptor {
 };
 
 struct pmemset_part_map {
-	char stub;
+	void *addr;     /* base address */
+	size_t length;  /* length of the mapped content */
+	char stub;      /* To be removed */
 };
 
 /*
