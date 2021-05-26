@@ -221,14 +221,13 @@ EXTRA_TARGETS_CLOBBER = $(EXTRA_TARGETS:=-clobber)
 endif
 
 PMEMLOG_PRIV_OBJ=$(LIB_OUTDIR)/libpmemlog/libpmemlog_unscoped.o
-PMEMBLK_PRIV_OBJ=$(LIB_OUTDIR)/libpmemblk/libpmemblk_unscoped.o
 
 ifneq ($(LIBPMEMLOG_PRIV_FUNCS),)
 OBJS += pmemlog_priv_funcs.o
 endif
 
-ifneq ($(LIBPMEMBLK_PRIV_FUNCS),)
-OBJS += pmemblk_priv_funcs.o
+ifeq ($(LIBPMEMBLK_PRIVATE), y)
+OBJS += $(LIB_OUTDIR)/libpmemblk/btt.o
 endif
 
 MAKEFILE_DEPS=../Makefile.inc Makefile $(TOP)/src/common.inc
