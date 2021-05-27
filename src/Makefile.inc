@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright 2014-2020, Intel Corporation
+# Copyright 2014-2021, Intel Corporation
 #
 # src/Makefile.inc -- common Makefile rules for PMDK
 #
@@ -249,16 +249,19 @@ $(LIB_SO): $(LIB_SO_SONAME) $(MAKEFILE_DEPS)
 $(LIB_AR_UNSCOPED): $(OBJS) $(EXTRA_OBJS) $(MAKEFILE_DEPS)
 	$(LD) -o $@ -r $(OBJS) $(EXTRA_OBJS)
 
-ifeq ($(LIB_LINK),)
-$(LIB_AR_ALL): $(LIB_AR_UNSCOPED) $(MAKEFILE_DEPS)
-	$(OBJCOPY) $< $@
-else
-$(LIB_AR_ALL): $(LIB_AR_UNSCOPED) $(LIB_LINK) $(MAKEFILE_DEPS)
-	$(OBJCOPY) --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$$/-G \1/p' $(LIB_LINK)` $< $@
-endif
+#ifeq ($(LIB_LINK),)
+#$(LIB_AR_ALL): $(LIB_AR_UNSCOPED) $(MAKEFILE_DEPS)
+#	$(OBJCOPY) $< $@
+#else
+#$(LIB_AR_ALL): $(LIB_AR_UNSCOPED) $(LIB_LINK) $(MAKEFILE_DEPS)
+#	$(OBJCOPY) --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$$/-G \1/p' $(LIB_LINK)` $< $@
+#endif
 
-$(LIB_AR): $(LIB_AR_ALL) $(MAKEFILE_DEPS)
-	$(AR) rv $@ $(LIB_AR_ALL)
+#$(LIB_AR): $(LIB_AR_ALL) $(MAKEFILE_DEPS)
+#	$(AR) rv $@ $(LIB_AR_ALL)
+
+$(LIB_AR): $(LIB_AR_UNSCOPED) $(MAKEFILE_DEPS)
+	$(AR) rv $@ $(LIB_AR_UNSCOPED)
 
 $(PMEMBLK_PRIV_OBJ):
 	$(MAKE) -C $(LIBSDIR) libpmemblk

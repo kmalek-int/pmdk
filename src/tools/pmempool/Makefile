@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright 2014-2020, Intel Corporation
+# Copyright 2014-2021, Intel Corporation
 #
 # Makefile -- top Makefile for pmempool
 #
@@ -23,13 +23,13 @@ LIBPMEMLOG=y
 LIBPMEMPOOL=y
 TOOLS_COMMON=y
 
-LIBPMEMOBJ_PRIV=memblock_from_offset alloc_class_by_id\
-	memblock_rebuild_state alloc_class_by_run\
-	heap_run_foreach_object alloc_class_collection_new\
-	alloc_class_collection_delete
+#LIBPMEMOBJ_PRIV=memblock_from_offset alloc_class_by_id\
+#	memblock_rebuild_state alloc_class_by_run\
+#	heap_run_foreach_object alloc_class_collection_new\
+#	alloc_class_collection_delete
 
-LIBPMEMBLK_PRIV=btt_init btt_write btt_fini btt_info_convert2h\
-	btt_info_convert2le btt_flog_convert2h btt_flog_convert2le
+#LIBPMEMBLK_PRIV=btt_init btt_write btt_fini btt_info_convert2h\
+#	btt_info_convert2le btt_flog_convert2h btt_flog_convert2le
 
 INCS += -I$(TOP)/src/common
 INCS += -I$(TOP)/src/rpmem_common
@@ -40,6 +40,7 @@ INCS += -I$(TOP)/src/libpmemblk
 INCS += -I$(TOP)/src/libpmemobj
 
 CFLAGS += -DUSE_RPMEM
+LDFLAGS += -Wl,--allow-multiple-definition
 
 MANPAGES = $(TOP)/doc/pmempool.1\
            $(TOP)/doc/pmempool-info.1\
@@ -52,6 +53,9 @@ MANPAGES = $(TOP)/doc/pmempool.1\
 	   $(TOP)/doc/pmempool-transform.1
 
 BASH_COMP_FILES = bash_completion/pmempool
+
+LIBPMEMBLK_PRIVATE=y
+LIBPMEMOBJ_PRIVATE=y
 
 include ../Makefile.inc
 

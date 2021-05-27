@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright 2014-2020, Intel Corporation
+# Copyright 2014-2021, Intel Corporation
 
 #
 # src/benchmarks/Makefile -- build all benchmarks
@@ -139,7 +139,11 @@ endif
 LIBMAP_DIR=../examples/libpmemobj/map
 LIBMAP=$(LIBMAP_DIR)/libmap.a
 
-OBJS += pmemobj.o
+#OBJS += pmemobj.o
+LDFLAGS += -Wl,--allow-multiple-definition
+OBJS += $(LIBS_PATH)/libpmemobj/pmalloc.o
+OBJS += $(LIBS_PATH)/libpmemobj/lane.o
+OBJS += $(LIBS_PATH)/libpmemobj/libpmemobj_unscoped.o
 
 ifeq ($(DEBUG),)
 CXXFLAGS += -O3
@@ -198,9 +202,9 @@ sparse:
 
 .PHONY: all clean clobber run $(CONFIGS)
 
-PMEMOBJ_SYMBOLS=pmalloc pfree lane_hold lane_release
+#PMEMOBJ_SYMBOLS=pmalloc pfree lane_hold lane_release
 
-pmemobj.o: $(LIBS_PATH)/libpmemobj/libpmemobj_unscoped.o
-	$(OBJCOPY) --localize-hidden $(addprefix -G, $(PMEMOBJ_SYMBOLS)) $< $@
+#pmemobj.o: $(LIBS_PATH)/libpmemobj/libpmemobj_unscoped.o
+#	$(OBJCOPY) --localize-hidden $(addprefix -G, $(PMEMOBJ_SYMBOLS)) $< $@
 
 -include .deps/*.P

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright 2014-2020, Intel Corporation
+# Copyright 2014-2021, Intel Corporation
 #
 # src/common.inc -- common Makefile rules for PMDK
 #
@@ -24,6 +24,16 @@ CHECK_OS = $(TOP)/utils/check-os.sh
 OS_BANNED = $(TOP)/utils/os-banned
 COVERAGE = 0
 FAULT_INJECTION ?= 0
+
+CFLAGS += -flto
+#CFLAGS += -flto-compression-level=0
+LDFLAGS += -flto
+LDFLAGS += -Wl,--allow-multiple-definition
+# -fuse-ld=gold
+
+#CFLAGS += -flto=auto
+#CFLAGS += -ffat-lto-objects
+#LDFLAGS += -flto=auto
 
 PKG_CONFIG ?= pkg-config
 HEADERS = $(wildcard *.h) $(wildcard *.hpp)

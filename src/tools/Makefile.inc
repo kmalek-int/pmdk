@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright 2014-2020, Intel Corporation
+# Copyright 2014-2021, Intel Corporation
 #
 # src/tools/Makefile.inc -- Makefile include for all tools
 #
@@ -107,9 +107,9 @@ else
 LIBSDIR_PRIV=$(LIBSDIR_NONDEBUG)
 endif
 
-PMEMLOG_PRIV_OBJ=$(LIBSDIR_PRIV)/libpmemlog/libpmemlog_unscoped.o
-PMEMOBJ_PRIV_OBJ=$(LIBSDIR_PRIV)/libpmemobj/libpmemobj_unscoped.o
-PMEMBLK_PRIV_OBJ=$(LIBSDIR_PRIV)/libpmemblk/libpmemblk_unscoped.o
+#PMEMLOG_PRIV_OBJ=$(LIBSDIR_PRIV)/libpmemlog/libpmemlog_unscoped.o
+#PMEMOBJ_PRIV_OBJ=$(LIBSDIR_PRIV)/libpmemobj/libpmemobj_unscoped.o
+#PMEMBLK_PRIV_OBJ=$(LIBSDIR_PRIV)/libpmemblk/libpmemblk_unscoped.o
 
 LIBS += $(LIBUUID)
 
@@ -209,12 +209,28 @@ ifneq ($(LIBPMEMLOG_PRIV),)
 OBJS += pmemlog_priv.o
 endif
 
-ifneq ($(LIBPMEMOBJ_PRIV),)
-OBJS += pmemobj_priv.o
+#ifneq ($(LIBPMEMOBJ_PRIV),)
+#OBJS += pmemobj_priv.o
+#endif
+
+#ifneq ($(LIBPMEMBLK_PRIV),)
+#OBJS += pmemblk_priv.o
+#endif
+
+ifeq ($(LIBPMEMBLK_PRIVATE), y)
+OBJS += $(LIBSDIR_PRIV)/libpmemblk/btt.o
 endif
 
-ifneq ($(LIBPMEMBLK_PRIV),)
-OBJS += pmemblk_priv.o
+ifeq ($(LIBPMEMOBJ_PRIVATE), y)
+OBJS += $(LIBSDIR_PRIV)/libpmemobj/critnib.o\
+	$(LIBSDIR_PRIV)/libpmemobj/alloc_class.o\
+	$(LIBSDIR_PRIV)/libpmemobj/memops.o\
+	$(LIBSDIR_PRIV)/libpmemobj/heap.o\
+	$(LIBSDIR_PRIV)/libpmemobj/memblock.o\
+	$(LIBSDIR_PRIV)/libpmemobj/bucket.o\
+	$(LIBSDIR_PRIV)/libpmemobj/container_seglists.o\
+	$(LIBSDIR_PRIV)/libpmemobj/recycler.o\
+	$(LIBSDIR_PRIV)/libpmemobj/container_ravl.o	
 endif
 
 ifneq ($(HEADERS),)
@@ -289,23 +305,23 @@ $(TARGET_STATIC_NONDEBUG): $(STATIC_NONDEBUG_LIBS)
 $(TARGET):
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(DYNAMIC_LIBS) $(LIBS)
 
-$(PMEMLOG_PRIV_OBJ):
-	$(MAKE) -C $(LIBSDIR) libpmemlog
+#$(PMEMLOG_PRIV_OBJ):
+#	$(MAKE) -C $(LIBSDIR) libpmemlog
 
-pmemlog_priv.o: $(PMEMLOG_PRIV_OBJ)
-	$(OBJCOPY) --localize-hidden $(addprefix -G, $(LIBPMEMLOG_PRIV)) $< $@
+#pmemlog_priv.o: $(PMEMLOG_PRIV_OBJ)
+#	$(OBJCOPY) --localize-hidden $(addprefix -G, $(LIBPMEMLOG_PRIV)) $< $@
 
-$(PMEMOBJ_PRIV_OBJ):
-	$(MAKE) -C $(LIBSDIR) libpmemobj
+#$(PMEMOBJ_PRIV_OBJ):
+#	$(MAKE) -C $(LIBSDIR) libpmemobj
 
-pmemobj_priv.o: $(PMEMOBJ_PRIV_OBJ)
-	$(OBJCOPY) --localize-hidden $(addprefix -G, $(LIBPMEMOBJ_PRIV)) $< $@
+#pmemobj_priv.o: $(PMEMOBJ_PRIV_OBJ)
+#	$(OBJCOPY) --localize-hidden $(addprefix -G, $(LIBPMEMOBJ_PRIV)) $< $@
 
-$(PMEMBLK_PRIV_OBJ):
-	$(MAKE) -C $(LIBSDIR) libpmemblk
+#$(PMEMBLK_PRIV_OBJ):
+#	$(MAKE) -C $(LIBSDIR) libpmemblk
 
-pmemblk_priv.o: $(PMEMBLK_PRIV_OBJ)
-	$(OBJCOPY) --localize-hidden $(addprefix -G, $(LIBPMEMBLK_PRIV)) $< $@
+#pmemblk_priv.o: $(PMEMBLK_PRIV_OBJ)
+#	$(OBJCOPY) --localize-hidden $(addprefix -G, $(LIBPMEMBLK_PRIV)) $< $@
 
 objdir=.
 
